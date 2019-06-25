@@ -25,8 +25,12 @@ public class FirebaseNotificationDTO {
     private String longMessage;
     private long date;
     private boolean show;
-    private Boolean positiveButton;
-    private Boolean negativeButton;
-    private String positiveButtonTitle;
-    private String negativeButtonTitle;
+
+    private Boolean ButtonOne;
+    private Boolean ButtonTwo;
+    private Boolean ButtonThree;
+
+    private String ButtonTitleOne;
+    private String ButtonTitleTwo;
+    private String ButtonTitleThree;
 }

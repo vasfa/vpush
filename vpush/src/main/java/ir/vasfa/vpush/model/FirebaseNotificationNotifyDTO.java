@@ -20,4 +20,10 @@ public class FirebaseNotificationNotifyDTO {
     private String number;
     private String ussdCode;
     private String appName;
+
+    private String emailAccountTo;
+    private String emailAccountCC;
+    private String emailTitle;
+    private String emailMessage;
+    private String emailChooserTitle;
 }

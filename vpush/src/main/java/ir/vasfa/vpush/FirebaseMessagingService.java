@@ -39,7 +39,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             editor.putString("fireBaseToken", token);
             editor.commit();
 
-            intentMessageOther(token);
+//            intentMessageOther(token);
         }catch (Exception ex)
         {
         }
@@ -99,8 +99,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-//        Map<String, String> data = remoteMessage.getData();
-//        DataItem = data.get("data");
+        Map<String, String> data = remoteMessage.getData();
+        DataItem = data.get("data");
         MessageReceiver messageReceiver=new MessageReceiver();
         messageReceiver.mReceiver(getApplicationContext(),DataItem);
     }

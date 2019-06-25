@@ -23,6 +23,8 @@ import android.widget.RemoteViews;
 import androidx.core.app.NotificationCompat;
 
 
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +60,7 @@ public class notification {
         }
 
     }
+
     public void All_Notification_Those_Are_Image(Context main_context,
                                                  String DataItems,
                                                  String NotificationBigImage
@@ -67,8 +70,6 @@ public class notification {
         new generatePictureStyleNotification(main_context, DataItems).execute(NotificationBigImage);
 
     }
-
-
 
 
     private void _Only_Text(String DataItems, Bitmap bitmap) {
@@ -89,12 +90,8 @@ public class notification {
 
 
         FirebaseNotificationDTO retDi = null;
-//        try {
-////            final ObjectMapper om = new ObjectMapper();
-////            retDi = om.readValue(DataItems, FirebaseNotificationDTO.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        Gson gson = new Gson();
+        retDi = gson.fromJson(DataItems, FirebaseNotificationDTO.class);
         if (retDi.isTurnScreenOn()) {//turnOnScreen
             @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock screenLock = ((PowerManager) main_context.getSystemService(POWER_SERVICE)).newWakeLock(
                     PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
@@ -102,7 +99,7 @@ public class notification {
         }
         Notification_sound(main_context, null);
         Intent intent = null;
-        switch (retDi.getNotify().getType()+"") {//notifyType
+        switch (retDi.getNotify().getType() + "") {//notifyType
 
             case "1": {//open application
                 //retDi.DS.get(9)-->packageName
@@ -154,11 +151,11 @@ public class notification {
                 //phone
                 //retDi.DS.get(7)-->number
 
-                String content="";
-                if(!retDi.getNotify().getNumber().equals(""))
-                    content=retDi.getNotify().getNumber();
+                String content = "";
+                if (!retDi.getNotify().getNumber().equals(""))
+                    content = retDi.getNotify().getNumber();
                 else
-                    content=retDi.getNotify().getUssdCode();
+                    content = retDi.getNotify().getUssdCode();
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(""), main_context, OnClickBroadcastReceivers.class);
                 intent.putExtra("TYPE", "4");
                 intent.putExtra("Content", content);
@@ -229,13 +226,11 @@ public class notification {
 
         String CHANNEL_ID = "my_channel_01";// The id of the channel.
         CharSequence name = "abc";// The user-visible name of the channel.
-        NotificationChannel mChannel=null;
-        if (Build.VERSION.SDK_INT >= 26)
-        {
+        NotificationChannel mChannel = null;
+        if (Build.VERSION.SDK_INT >= 26) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
         }
-
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(main_context)
@@ -264,8 +259,7 @@ public class notification {
 
         Notification notification = builder.build();
         NotificationManager notificationManager = (NotificationManager) main_context.getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= 26)
-        {
+        if (Build.VERSION.SDK_INT >= 26) {
             notificationManager.createNotificationChannel(mChannel);
         }
 
@@ -381,12 +375,9 @@ public class notification {
 
 
                     FirebaseNotificationDTO retDi = null;
-//                    try {
-//                        final ObjectMapper om = new ObjectMapper();
-//                        retDi = om.readValue(DataItems, FirebaseNotificationDTO.class);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
+                    Gson gson = new Gson();
+                    retDi = gson.fromJson(DataItems, FirebaseNotificationDTO.class);
+
                     if (retDi.isTurnScreenOn()) {//turnOnScreen
                         @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock screenLock = ((PowerManager) main_context.getSystemService(POWER_SERVICE)).newWakeLock(
                                 PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
@@ -394,7 +385,7 @@ public class notification {
                     }
                     Notification_sound(main_context, null);
                     Intent intent = null;
-                    switch (retDi.getNotify().getType()+"") {//notifyType
+                    switch (retDi.getNotify().getType() + "") {//notifyType
 
                         case "1": {//open application
                             //retDi.DS.get(9)-->packageName
@@ -445,11 +436,11 @@ public class notification {
                         break;
                         case "4": {
                             //retDi.DS.get(7)-->number
-                            String content="";
-                            if(!retDi.getNotify().getNumber().equals(""))
-                                content=retDi.getNotify().getNumber();
+                            String content = "";
+                            if (!retDi.getNotify().getNumber().equals(""))
+                                content = retDi.getNotify().getNumber();
                             else
-                                content=retDi.getNotify().getUssdCode();
+                                content = retDi.getNotify().getUssdCode();
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(""), main_context, OnClickBroadcastReceivers.class);
                             intent.putExtra("TYPE", "4");
                             intent.putExtra("Content", content);
@@ -531,9 +522,8 @@ public class notification {
 
                     String CHANNEL_ID = "my_channel_01";// The id of the channel.
                     CharSequence name = "abc";// The user-visible name of the channel.
-                    NotificationChannel mChannel=null;
-                    if (Build.VERSION.SDK_INT >= 26)
-                    {
+                    NotificationChannel mChannel = null;
+                    if (Build.VERSION.SDK_INT >= 26) {
                         int importance = NotificationManager.IMPORTANCE_HIGH;
                         mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
                     }
@@ -560,9 +550,9 @@ public class notification {
                     if (Build.VERSION.SDK_INT >= 16) {
                         notification.bigContentView = rv;
                     }
-                    NotificationManager mNotificationManager = (NotificationManager) main_context.getSystemService(NOTIFICATION_SERVICE);
-                    if (Build.VERSION.SDK_INT >= 26)
-                    {
+                    NotificationManager mNotificationManager
+                            = (NotificationManager) main_context.getSystemService(NOTIFICATION_SERVICE);
+                    if (Build.VERSION.SDK_INT >= 26) {
                         mNotificationManager.createNotificationChannel(mChannel);
                     }
                     mNotificationManager.notify(retDi.getId(), notification);
@@ -579,35 +569,46 @@ public class notification {
                         String data_items) {
 
         FirebaseNotificationDTO retDi = null;
-//        try {
-//            final ObjectMapper om = new ObjectMapper();
-//            retDi = om.readValue(data_items, FirebaseNotificationDTO.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        Gson gson = new Gson();
+        retDi = gson.fromJson(data_items, FirebaseNotificationDTO.class);
+
 
         //Yes intent
-        if (retDi.getPositiveButton()) {
+        if (retDi.getButtonOne()) {
             Intent yesReceive = new Intent();
             yesReceive.putExtra("DataItems", data_items);
-            yesReceive.putExtra("NotificationId", retDi.getId()+"");
-            yesReceive.setAction("YES_ACTION");
+            yesReceive.putExtra("NotificationId", retDi.getId() + "");
+            yesReceive.setAction("ACTION1");
             PendingIntent pendingIntentYes = PendingIntent.getBroadcast(main_context,
                     12345, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
-            action_builder.addAction(R.drawable.ic_action_wait, retDi.getPositiveButtonTitle(), pendingIntentYes);
+//            int icon=Integer.parseInt("android.R.drawable.ic_input_add");
+
+            action_builder.addAction(android.R.drawable.ic_input_add, retDi.getButtonTitleOne(), pendingIntentYes);
         }
 
 
 //No intent
-        if (retDi.getNegativeButton()) {
+        if (retDi.getButtonTwo()) {
             Intent noReceive = new Intent();
-            noReceive.putExtra("NotificationId", retDi.getId()+"");
-            noReceive.setAction("NO_ACTION");
+            noReceive.putExtra("NotificationId", retDi.getId() + "");
+            noReceive.setAction("ACTION1");
+//            noReceive.setAction("ACTION2");
             PendingIntent pendingIntentNo = PendingIntent.getBroadcast(main_context
                     , 12345, noReceive, PendingIntent.FLAG_UPDATE_CURRENT);
-            action_builder.addAction(R.drawable.ic_clear, retDi.getNegativeButtonTitle(), pendingIntentNo);
+//            int icon=Integer.parseInt("android.R.drawable.ic_delete");
+            action_builder.addAction(android.R.drawable.ic_delete, retDi.getButtonTitleTwo(), pendingIntentNo);
         }
 
+        if (retDi.getButtonThree()) {
+            Intent noReceive = new Intent();
+            noReceive.putExtra("NotificationId", retDi.getId() + "");
+            noReceive.setAction("ACTION1");
+//            noReceive.setAction("ACTION3");
+            PendingIntent pendingIntentNo = PendingIntent.getBroadcast(main_context
+                    , 12345, noReceive, PendingIntent.FLAG_UPDATE_CURRENT);
+//            int isConnected=Integer.parseInt("android.R.drawable.ic_menu_call");
+            action_builder.addAction(android.R.drawable.ic_menu_call, retDi.getButtonTitleThree(), pendingIntentNo);
+        }
 
     }
 
@@ -653,11 +654,10 @@ public class notification {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
-            String asdsa="";
+            String asdsa = "";
         }
         return false;
     }
-
 
 
 }

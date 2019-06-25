@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
+import com.google.gson.Gson;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,9 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ir.vasfa.vpush.model.FirebaseNotificationDTO;
-
-
-//import org.codehaus.jackson.map.ObjectMapper;
 
 
 /**
@@ -32,16 +31,16 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        String YES_ACTION = "YES_ACTION";
-        String NO_ACTION = "NO_ACTION";
+        String ACTION1 = "ACTION1";
+        String ACTION2 = "ACTION2";
+        String ACTION3 = "ACTION3";
 
-        if (YES_ACTION.equals(action)) {
+        if (ACTION1.equals(action)) {
             String DataItems = "";
             String NotificationId = "";
             NotificationId = intent.getStringExtra("NotificationId");
             DataItems = intent.getStringExtra("DataItems");
-            if(!DismissNotification(context,NotificationId))
-            {
+            if (!DismissNotification(context, NotificationId)) {
                 CallIntent(DataItems, context);
 
 
@@ -50,15 +49,24 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
                 notificationManager.cancel(Integer.parseInt(NotificationId));
             }
 
-        } else if (NO_ACTION.equals(action)) {
-
-            String NotificationId = "";
-            NotificationId = intent.getStringExtra("NotificationId");
-
-            NotificationManager notificationManager = (NotificationManager) context.getApplicationContext()
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(Integer.parseInt(NotificationId));
         }
+//        else if (ACTION2.equals(action)) {
+//
+//            String NotificationId = "";
+//            NotificationId = intent.getStringExtra("NotificationId");
+//
+//            NotificationManager notificationManager = (NotificationManager) context.getApplicationContext()
+//                    .getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.cancel(Integer.parseInt(NotificationId));
+//        }else if (ACTION3.equals(action)) {
+//
+//            String NotificationId = "";
+//            NotificationId = intent.getStringExtra("NotificationId");
+//
+//            NotificationManager notificationManager = (NotificationManager) context.getApplicationContext()
+//                    .getSystemService(Context.NOTIFICATION_SERVICE);
+//            notificationManager.cancel(Integer.parseInt(NotificationId));
+//        }
     }
 
     public void CallIntent(String DataItems, Context main_context) {
@@ -78,15 +86,12 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
 
 
             FirebaseNotificationDTO retDi = null;
-//            try {
-//                final ObjectMapper om = new ObjectMapper();
-//                retDi = om.readValue(DataItems, FirebaseNotificationDTO.class);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            Gson gson = new Gson();
+            retDi = gson.fromJson(DataItems, FirebaseNotificationDTO.class);
+
 
             Intent intent = null;
-            switch (retDi.getNotify().getType()+"") {//notifyType
+            switch (retDi.getNotify().getType() + "") {//notifyType
 
                 case "1": {//open application
                     //retDi.DS.get(9)-->packageName
@@ -136,11 +141,11 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
                 case "4": {
                     //retDi.DS.get(7)-->number
 
-                    String content="";
-                    if(!retDi.getNotify().getNumber().equals(""))
-                        content=retDi.getNotify().getNumber();
+                    String content = "";
+                    if (!retDi.getNotify().getNumber().equals(""))
+                        content = retDi.getNotify().getNumber();
                     else
-                        content=retDi.getNotify().getUssdCode();
+                        content = retDi.getNotify().getUssdCode();
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse(""), main_context, OnClickBroadcastReceivers.class);
                     intent.putExtra("TYPE", "4");
                     intent.putExtra("Content", content);
@@ -197,11 +202,18 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
                     intent.putExtra("myclass", "");
                 }
                 break;
+                case "9": {//dismiss
+
+                    NotificationManager notificationManager = (NotificationManager) main_context.getApplicationContext()
+                            .getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancel(retDi.getId());
+                }
+                break;
 
 
             }
 
-            if(intent!=null)
+            if (intent != null)
                 main_context.sendBroadcast(intent);
 //                main_context.startActivity(intent);
         } catch (Exception ex) {
@@ -219,27 +231,23 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
         return false;
     }
 
-    public boolean DismissNotification(Context Dismisscontext,String noti_id)
-    {
-        try{
-            boolean dismissNotifi=false;
-            sharedPreferences = Dismisscontext.getSharedPreferences("VASFAPUSH_DATA",Dismisscontext.MODE_PRIVATE);
+    public boolean DismissNotification(Context Dismisscontext, String noti_id) {
+        try {
+            boolean dismissNotifi = false;
+            sharedPreferences = Dismisscontext.getSharedPreferences("VASFAPUSH_DATA", Dismisscontext.MODE_PRIVATE);
             String not_ides = sharedPreferences.getString("not_ides", "");
             String not_timing = sharedPreferences.getString("not_timing", "");
-            if(!not_ides.equals(""))
-            {
+            if (!not_ides.equals("")) {
 
-                String[] iid=not_ides.split(";");
-                String[] itiming=not_timing.split(";");
-                ArrayList<String> dat=new ArrayList<>();
-                int pos=-1;
-                int main_pos=-1;
-                for(String data:iid)
-                {
+                String[] iid = not_ides.split(";");
+                String[] itiming = not_timing.split(";");
+                ArrayList<String> dat = new ArrayList<>();
+                int pos = -1;
+                int main_pos = -1;
+                for (String data : iid) {
                     pos++;
-                    if(data.equals(noti_id))
-                    {
-                        main_pos=pos;
+                    if (data.equals(noti_id)) {
+                        main_pos = pos;
                         break;
                     }
 
@@ -248,7 +256,7 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date();
                 String newdate = dateFormat.format(date);
-                long timeInMilliseconds=0L;
+                long timeInMilliseconds = 0L;
                 try {
                     Date mDate = dateFormat.parse(newdate);
                     timeInMilliseconds = mDate.getTime();
@@ -257,41 +265,35 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
                     e.printStackTrace();
                 }
 
-                if(main_pos!=-1)
-                {
-                    if(Long.parseLong(itiming[pos])<Long.parseLong(timeInMilliseconds+""))
-                    {
+                if (main_pos != -1) {
+                    if (Long.parseLong(itiming[pos]) < Long.parseLong(timeInMilliseconds + "")) {
                         NotificationManager notificationManager =
                                 (NotificationManager) Dismisscontext.getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancel(Integer.parseInt(noti_id));
 
-                        dismissNotifi=true;
-                        String n_noti_id_new="";
-                        String n_timing_new="";
-                        int fake_pos=-1;
-                        for(String data:iid)
-                        {
+                        dismissNotifi = true;
+                        String n_noti_id_new = "";
+                        String n_timing_new = "";
+                        int fake_pos = -1;
+                        for (String data : iid) {
                             fake_pos++;
-                            if(main_pos!=fake_pos)
-                            {
-                                if(n_noti_id_new.equals(""))
-                                    n_noti_id_new=data;
+                            if (main_pos != fake_pos) {
+                                if (n_noti_id_new.equals(""))
+                                    n_noti_id_new = data;
                                 else
-                                    n_noti_id_new+=";"+data;
+                                    n_noti_id_new += ";" + data;
                             }
 
                         }
 
-                        fake_pos=-1;
-                        for(String data:itiming)
-                        {
+                        fake_pos = -1;
+                        for (String data : itiming) {
                             fake_pos++;
-                            if(main_pos!=fake_pos)
-                            {
-                                if(n_timing_new.equals(""))
-                                    n_timing_new=data;
+                            if (main_pos != fake_pos) {
+                                if (n_timing_new.equals(""))
+                                    n_timing_new = data;
                                 else
-                                    n_timing_new+=";"+data;
+                                    n_timing_new += ";" + data;
                             }
 
                         }
@@ -302,23 +304,18 @@ public class NotificationButtonReceiver extends BroadcastReceiver {
                         editor.commit();
 
                         return dismissNotifi;
-                    }else{
+                    } else {
                         return dismissNotifi;
                     }
-                }else{
+                } else {
                     return dismissNotifi;
                 }
 
 
-
-
-            }
-            else{
+            } else {
                 return dismissNotifi;
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return false;
         }
     }

@@ -12,7 +12,8 @@ import android.os.AsyncTask;
 
 import androidx.core.app.NotificationCompat;
 
-//import org.codehaus.jackson.map.ObjectMapper;
+
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -67,13 +68,11 @@ public class MessageReceiver {
                     String Total_Notification = sharedPreferences.getString("Total_Notification", "0");
 
                     {
-                        FirebaseNotificationDTO retDi = new FirebaseNotificationDTO();
-//                        try {
-//                            final ObjectMapper om = new ObjectMapper();
-//                            retDi = om.readValue(DataItem, FirebaseNotificationDTO.class);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
+                        FirebaseNotificationDTO retDi = null;
+
+                        Gson gson = new Gson();
+                        retDi = gson.fromJson(DataItem, FirebaseNotificationDTO.class);
+
                         ExpireDateTime = retDi.getDate() + "";
                         String not_ides = sharedPreferences.getString("not_ides", "");
                         String not_timing = sharedPreferences.getString("not_timing", "");

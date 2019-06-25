@@ -17,18 +17,16 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.DownloadListener;
 import com.androidnetworking.interfaces.DownloadProgressListener;
-
-//import org.codehaus.jackson.map.ObjectMapper;
+import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+import ir.vasfa.vpush.Activities.EmailActivity;
 import ir.vasfa.vpush.Connection.NetworkManager;
 import ir.vasfa.vpush.model.FirebaseNotificationDTO;
 
@@ -125,28 +123,25 @@ public class OnClickBroadcastReceivers  extends BroadcastReceiver {
 
                 }else if (TYPE.equals("6")) {//--------------------Send Email
 
-//                    try {
-//                        FirebaseNotificationDTO retDi = null;
-//                        try {
-//                            final ObjectMapper om = new ObjectMapper();
-//                            retDi = om.readValue(Content, FirebaseNotificationDTO.class);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
+                    try {
+                        FirebaseNotificationDTO retDi = null;
+                    Gson gson = new Gson();
+                    retDi = gson.fromJson(Content, FirebaseNotificationDTO.class);
+
 //
-//                        String[] emailAccoutTo=retDi.DS.get(9).split(";");
-//                        String[] emailAccoutCC=retDi.DS.get(10).split(";");
-//                        Intent sintent = new Intent(context, EmailActivity.class);
-//                        sintent.putExtra("noti_id", retDi.DS.get(0));
-//                        sintent.putExtra("emailAccoutTo", emailAccoutTo);
-//                        sintent.putExtra("emailAccoutCC", emailAccoutCC);
-//                        sintent.putExtra("emailTitle", retDi.DS.get(11));
-//                        sintent.putExtra("emailmessage", retDi.DS.get(12));
-//                        sintent.putExtra("emailChosserTitle", retDi.DS.get(13));
-//                        context.startActivity(sintent);
-//                    } catch (Exception ex) {
-//                        String asd = "";
-//                    }
+                        String[] emailAccountTo=retDi.getNotify().getEmailAccountTo().split(";");
+                        String[] emailAccountCC=retDi.getNotify().getEmailAccountCC().split(";");
+                        Intent sintent = new Intent(context, EmailActivity.class);
+                        sintent.putExtra("noti_id", noti_id);
+                        sintent.putExtra("emailAccountTo", emailAccountTo);
+                        sintent.putExtra("emailAccountCC", emailAccountCC);
+                        sintent.putExtra("emailTitle", retDi.getNotify().getEmailTitle());
+                        sintent.putExtra("emailMessage", retDi.getNotify().getEmailMessage());
+                        sintent.putExtra("emailChooserTitle", retDi.getNotify().getEmailChooserTitle());
+                        context.startActivity(sintent);
+                    } catch (Exception ex) {
+                        String asd = "";
+                    }
 
 
                 }else if (TYPE.equals("7")) {//--------------------do nothing
@@ -166,12 +161,9 @@ public class OnClickBroadcastReceivers  extends BroadcastReceiver {
                         if (NetworkManager.isConnected(context)) {
                             if (!Content.equals("")) {
                                 FirebaseNotificationDTO retDi = null;
-//                                try {
-//                                    final ObjectMapper om = new ObjectMapper();
-//                                    retDi = om.readValue(Content, FirebaseNotificationDTO.class);
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
+                                Gson gson = new Gson();
+                                retDi = gson.fromJson(Content, FirebaseNotificationDTO.class);
+
 
                                 String[] items = Content.split(";");
                                 dowunloadNewApp(retDi.getNotify().getUrl(), retDi.getNotify().getAppName(), true, context);
