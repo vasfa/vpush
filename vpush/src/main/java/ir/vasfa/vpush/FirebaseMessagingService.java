@@ -39,7 +39,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             editor.putString("fireBaseToken", token);
             editor.commit();
 
-//            intentMessageOther(token);
+            intentMessageOther(token);
         }catch (Exception ex)
         {
         }
