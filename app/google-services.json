@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "940378920016",
+    "firebase_url": "https://vasfapush-d9461.firebaseio.com",
+    "project_id": "vasfapush-d9461",
+    "storage_bucket": "vasfapush-d9461.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940378920016:android:a57a9548bea2c94c",
+        "android_client_info": {
+          "package_name": "ir.vasfa.vasfapush"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940378920016-s0p2qse56no9n43g3jurlemq119cce2u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkZz5tLtZgmhuAhITs3i-DKtlx1E9romQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940378920016-s0p2qse56no9n43g3jurlemq119cce2u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
