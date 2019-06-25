@@ -101,6 +101,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Map<String, String> data = remoteMessage.getData();
         DataItem = data.get("data");
+
         MessageReceiver messageReceiver=new MessageReceiver();
         messageReceiver.mReceiver(getApplicationContext(),DataItem);
     }
